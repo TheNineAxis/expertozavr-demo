@@ -8,4 +8,4 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 @media(max-width:480px){.service-grid{grid-template-columns:1fr}.service-card{padding:26px;min-height:270px}.service-card h3{font-size:23px;letter-spacing:-.6px}.service-card p{font-size:13px;line-height:1.8}.card-top{margin-bottom:20px}.card-link{font-size:12px}.service-icon{width:34px;height:34px}.hero-note{font-size:10px}.form-note{font-size:11px}.consent{font-size:11px}}
 .hero-copy,.hero-visual{min-width:0}
-@media(max-width:360px){h1{font-size:35px;letter-spacing:-1.7px}}
+@media(max-width:360px){h1{font-size:clamp(30px,9.7vw,35px);letter-spacing:-1.5px}}
