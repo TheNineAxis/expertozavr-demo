@@ -8,3 +8,12 @@
 @media(max-width:800px){.contact-hero{grid-template-columns:1fr;gap:30px}}
 @media(max-width:720px){.topline-inner>span:first-child{display:none}.topline-contact{font-size:11px}.contact-method{font-size:14px}.contact-methods{gap:14px}.contact-hero{grid-template-columns:1fr;gap:30px;padding-top:10px;padding-bottom:36px}.contact-hero .eyebrow{font-size:9px;margin-bottom:20px}.contact-lead{font-size:14px}.contact-intro-note{font-size:13px}.contact-channel{padding:27px}.contact-phone-value{font-size:28px}.contact-email-value{font-size:21px}.contact-channel-label{font-size:8px;margin-bottom:17px}.contact-channel-note{font-size:11px}.contact-requisites{grid-template-columns:1fr;gap:30px}.contact-requisites-note{font-size:13px;max-width:none;margin:21px 0}.requisite-row{grid-template-columns:1fr;gap:7px;padding:20px 0}.requisite-row dt{font-size:10px}.requisite-row dd{font-size:13px}}
 @media(max-width:360px){.contact-channel{padding:23px}.contact-phone-value{font-size:23px}.contact-email-value{font-size:16px;letter-spacing:-.4px}.contact-method{font-size:13px}.contact-methods .contact-all{font-size:10px}}
+
+/* Email draft review: visitor opens their own mail app and confirms sending. */
+.submit-button:disabled{opacity:.55;cursor:not-allowed;transform:none}.email-draft-status{font-size:13px;font-weight:500;margin:0 0 15px}.email-draft-recipient,.email-draft-subject{font-size:11px;line-height:1.8;overflow-wrap:anywhere;margin:0 0 8px}.email-draft-label{font-size:11px;margin:16px 0 8px!important}.email-draft-preview{display:block;width:100%;min-height:190px;max-height:420px;resize:vertical;font-size:12px!important;line-height:1.8!important}.email-draft-actions{display:flex;align-items:center;flex-wrap:wrap;gap:17px;margin-top:17px}.email-draft-open{font-size:11px;padding:12px 16px;justify-content:center}.email-draft-select{font-size:11px;color:#fff}.email-draft-help{font-size:10px;line-height:1.9;color:#c4c7c5;margin:17px 0 0}
+@media(max-width:720px){.email-draft-status{font-size:12px}.email-draft-recipient,.email-draft-subject{font-size:11px}.email-draft-actions{gap:15px}.email-draft-help{font-size:11px}.email-draft-open{max-width:100%;white-space:normal;text-align:center}}
+
+.contact-requisite-details{min-width:0}
+
+.email-draft-select:hover{color:#ff6971}.consultation-copy{position:sticky;top:130px;align-self:start}
+@media(max-width:720px){.consultation-copy{position:static}}

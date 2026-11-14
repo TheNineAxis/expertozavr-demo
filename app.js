@@ -55,21 +55,86 @@ dialog.addEventListener('click', event => {
 });
 dialogCta.addEventListener('click', () => { if (dialogService) serviceSelect.value = dialogService; closeDialog(); });
 function showPrivacy() {
- openDialog('Обработка данных', 'Сейчас это демонстрационная версия формы. Введённые имя, телефон и описание ситуации не отправляются и не сохраняются сайтом. Для проверки формы используйте вымышленные данные.', ['На сайте нет аналитических счётчиков и рекламных cookies.','Политика обработки персональных данных будет подготовлена перед запуском приёма заявок.'], '');
+ openDialog('Подготовка письма', 'Форма помогает составить письмо на ' + config.email + '. После подготовки вы сможете проверить текст и открыть письмо в своём почтовом приложении.', ['В письмо попадут имя, телефон, выбранное направление и описание ситуации.','Сайт не отправляет заявку автоматически: отправку нужно подтвердить в почтовом приложении.','Если почтовое приложение не настроено, выделите и скопируйте подготовленный текст, затем отправьте его через свою почту.'], '');
 }
 document.querySelector('#privacy-open').addEventListener('click', showPrivacy);
 document.querySelector('#footer-privacy').addEventListener('click', showPrivacy);
 const form = document.querySelector('#consultation-form');
+const nameInput = form.elements.name;
 const phone = form.elements.phone;
 const phoneError = document.querySelector('#phone-error');
 const result = document.querySelector('#form-result');
+const submitButton = form.querySelector('[type="submit"]');
+const mailReady = config.formMode === 'email-draft' && Boolean(config.email) && Boolean(window.EXPERTOZAVR_MAIL);
+submitButton.disabled = !mailReady;
 function validPhone() { const digits = phone.value.replace(/\D/g, ''); return digits.length >= 10 && digits.length <= 15 && /^[+\d\s()\-]+$/.test(phone.value); }
-phone.addEventListener('input', () => { phoneError.hidden = true; phone.removeAttribute('aria-invalid'); result.hidden = true; });
-form.addEventListener('input', () => { result.hidden = true; });
+function clearDraft() { result.hidden = true; result.replaceChildren(); }
+phone.addEventListener('input', () => { phoneError.hidden = true; phone.removeAttribute('aria-invalid'); });
+nameInput.addEventListener('input', () => nameInput.setCustomValidity(''));
+form.addEventListener('input', clearDraft);
+form.addEventListener('change', clearDraft);
+function showDraft(draft) {
+ result.replaceChildren();
+ const status = document.createElement('p');
+ status.className = 'email-draft-status';
+ status.setAttribute('role', 'status');
+ status.textContent = 'Письмо подготовлено. Проверьте текст и отправьте его из своего почтового приложения.';
+ const recipient = document.createElement('p');
+ recipient.className = 'email-draft-recipient';
+ recipient.textContent = 'Кому: ' + draft.recipient;
+ const subject = document.createElement('p');
+ subject.className = 'email-draft-subject';
+ subject.textContent = 'Тема: ' + draft.subject;
+ const previewLabel = document.createElement('label');
+ previewLabel.className = 'email-draft-label';
+ previewLabel.htmlFor = 'email-draft-preview';
+ previewLabel.textContent = 'Текст письма';
+ const preview = document.createElement('textarea');
+ preview.id = 'email-draft-preview';
+ preview.className = 'email-draft-preview';
+ preview.readOnly = true;
+ preview.rows = 8;
+ preview.spellcheck = false;
+ preview.value = draft.body;
+ const actions = document.createElement('div');
+ actions.className = 'email-draft-actions';
+ const open = document.createElement('a');
+ open.className = 'button email-draft-open';
+ open.href = draft.href;
+ open.textContent = draft.hasInlineBody ? 'Открыть письмо' : 'Открыть письмо без текста';
+ const select = document.createElement('button');
+ select.type = 'button';
+ select.className = 'inline-button email-draft-select';
+ select.textContent = 'Выделить текст';
+ select.addEventListener('click', () => { preview.focus(); preview.select(); });
+ actions.append(open, select);
+ const help = document.createElement('p');
+ help.className = 'email-draft-help';
+ help.textContent = draft.hasInlineBody
+  ? 'Письмо ещё не отправлено. Если почтовое приложение не настроено, скопируйте текст и отправьте его на указанный email через свою почту.'
+  : 'Текст длинный. Скопируйте его из поля выше и вставьте в письмо после открытия почтового приложения. Весь текст сохранён в этом поле.';
+ result.append(status, recipient, subject, previewLabel, preview, actions, help);
+ result.hidden = false;
+ result.focus({ preventScroll: true });
+ result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 form.addEventListener('submit', event => {
  event.preventDefault();
+ if (!mailReady) return;
+ if (!nameInput.value.trim()) { nameInput.setCustomValidity('Укажите, как к вам обращаться.'); nameInput.reportValidity(); return; }
+ if (!form.reportValidity()) return;
  if (!validPhone()) { phoneError.hidden = false; phone.setAttribute('aria-invalid', 'true'); phone.focus(); return; }
- result.hidden = false;
- result.textContent = 'Форма заполнена корректно. Это демонстрационная версия: заявка не отправлена. Чтобы обратиться в центр, позвоните или напишите по указанным контактам.';
+ try {
+  const draft = window.EXPERTOZAVR_MAIL.create({ recipient: config.email, name: nameInput.value, phone: phone.value, service: serviceSelect.value, message: form.elements.message.value });
+  showDraft(draft);
+ } catch {
+  result.replaceChildren();
+  const error = document.createElement('p');
+  error.setAttribute('role', 'status');
+  error.textContent = 'Не удалось подготовить письмо. Позвоните или напишите в центр по контактам, указанным рядом.';
+  result.append(error);
+  result.hidden = false;
+ }
 });
+
 document.querySelector('#year').textContent = new Date().getFullYear();
