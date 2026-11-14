@@ -70,6 +70,6 @@ form.addEventListener('submit', event => {
  event.preventDefault();
  if (!validPhone()) { phoneError.hidden = false; phone.setAttribute('aria-invalid', 'true'); phone.focus(); return; }
  result.hidden = false;
- result.textContent = 'Форма заполнена корректно. Это предварительная версия сайта: заявка не отправлена. Отправку подключим после согласования контактных данных.';
+ result.textContent = 'Форма заполнена корректно. Это демонстрационная версия: заявка не отправлена. Чтобы обратиться в центр, позвоните или напишите по указанным контактам.';
 });
 document.querySelector('#year').textContent = new Date().getFullYear();
